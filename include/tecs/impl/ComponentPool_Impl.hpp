@@ -35,13 +35,13 @@ namespace te::ecs
     }
 
     template<typename T>
-    bool ComponentPool<T>::Has(size_t entityId)
+    bool ComponentPool<T>::Has(size_t entityId) const
     {
         return _components.Test(entityId);
     }
 
     template<typename T>
-    boost::dynamic_bitset<size_t> &ComponentPool<T>::GetEntities()
+    boost::dynamic_bitset<size_t> ComponentPool<T>::GetEntities() const
     {
         return _components.GetBitset();
     }

@@ -105,7 +105,7 @@ namespace te::ecs
     }
 
     template<typename T>
-    boost::dynamic_bitset<size_t> &SparseContainer<T>::GetBitset()
+    boost::dynamic_bitset<size_t> SparseContainer<T>::GetBitset() const
     {
         return _sparseBitset;
     }
