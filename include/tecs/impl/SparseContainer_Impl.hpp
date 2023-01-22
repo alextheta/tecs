@@ -80,6 +80,11 @@ namespace te::ecs
     template<typename T>
     void SparseContainer<T>::Remove(size_t index)
     {
+        if (!Test(index))
+        {
+            return;
+        }
+
         size_t denseIndex = _sparseOrder[index];
         size_t lastItemIndex = Count() - 1;
 
