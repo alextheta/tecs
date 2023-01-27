@@ -24,12 +24,14 @@ namespace te::ecs
     }
 
     template<typename... IncludeComponents>
-    void Filter<IncludeComponents ...>::Update()
+    Filter<IncludeComponents ...> &Filter<IncludeComponents ...>::Build()
     {
         ApplyIncludes();
         ApplyExcludes();
 
         _entities.shrink_to_fit();
+
+        return *this;
     }
 
     template<typename... IncludeComponents>

@@ -35,7 +35,7 @@ namespace te::ecs
         template<typename... ExcludeComponents>
         Filter &Exclude();
 
-        void Update();
+        Filter &Build();
 
         Iterator begin();
         Iterator end();
