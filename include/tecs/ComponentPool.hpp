@@ -16,10 +16,10 @@ namespace te::ecs
         template<typename... Args>
         T &Add(size_t entityId, Args &&... args);
         T &Get(size_t entityId);
-        bool Has(size_t entityId) override;
+        bool Has(size_t entityId) const override;
         void Remove(size_t entityId) override;
 
-        boost::dynamic_bitset<size_t> &GetEntities() override;
+        boost::dynamic_bitset<size_t> GetEntities() const override;
 
     private:
         SparseContainer<T> _components;

@@ -23,7 +23,7 @@ namespace te::ecs
 
         void Reserve(size_t capacity);
 
-        boost::dynamic_bitset<size_t> &GetBitset();
+        boost::dynamic_bitset<size_t> GetBitset() const;
 
     private:
         boost::dynamic_bitset<size_t> _sparseBitset;

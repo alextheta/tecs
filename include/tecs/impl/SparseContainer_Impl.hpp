@@ -30,8 +30,8 @@ namespace te::ecs
         if (index >= denseIndex)
         {
             _sparseBitset.resize(index + 1);
+            _sparseOrder.resize(index + 1);
 
-            _sparseOrder.push_back(denseIndex);
             _dense.push_back(index);
             _denseData.push_back(value);
         }
@@ -43,6 +43,7 @@ namespace te::ecs
         }
 
         _sparseBitset.set(index);
+        _sparseOrder[index] = denseIndex;
 
         return Get(index);
     }
@@ -79,6 +80,11 @@ namespace te::ecs
     template<typename T>
     void SparseContainer<T>::Remove(size_t index)
     {
+        if (!Test(index))
+        {
+            return;
+        }
+
         size_t denseIndex = _sparseOrder[index];
         size_t lastItemIndex = Count() - 1;
 
@@ -105,7 +111,7 @@ namespace te::ecs
     }
 
     template<typename T>
-    boost::dynamic_bitset<size_t> &SparseContainer<T>::GetBitset()
+    boost::dynamic_bitset<size_t> SparseContainer<T>::GetBitset() const
     {
         return _sparseBitset;
     }

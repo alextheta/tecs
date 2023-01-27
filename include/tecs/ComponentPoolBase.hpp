@@ -13,9 +13,9 @@ namespace te::ecs
         ComponentPoolBase(World &world);
         virtual ~ComponentPoolBase() = default;
 
-        virtual bool Has(size_t entityId) = 0;
+        virtual bool Has(size_t entityId) const = 0;
         virtual void Remove(size_t entityId) = 0;
-        virtual boost::dynamic_bitset<size_t> &GetEntities() = 0;
+        virtual boost::dynamic_bitset<size_t> GetEntities() const = 0;
 
     protected:
         World &_world;
