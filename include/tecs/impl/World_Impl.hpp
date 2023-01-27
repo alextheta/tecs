@@ -71,6 +71,12 @@ namespace te::ecs
         return std::static_pointer_cast<ComponentPool<T>>(GetPool(typeId));
     }
 
+    template<typename... IncludeComponents>
+    Filter<IncludeComponents...> World::MakeFilter()
+    {
+        return Filter<IncludeComponents...>(*this);
+    }
+
     void World::BindPool(std::type_index typeId, std::shared_ptr<ComponentPoolBase> pool)
     {
         _componentPools[typeId] = pool;

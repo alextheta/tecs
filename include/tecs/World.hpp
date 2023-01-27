@@ -5,6 +5,7 @@
 #include <boost/dynamic_bitset.hpp>
 
 #include <tecs/ComponentPool.hpp>
+#include <tecs/Filter.hpp>
 
 namespace te::ecs
 {
@@ -21,6 +22,9 @@ namespace te::ecs
 
         template<typename T>
         const std::shared_ptr<ComponentPool<T>> GetPool();
+
+        template<typename... IncludeComponents>
+        Filter<IncludeComponents...> MakeFilter();
 
     private:
         std::unordered_map<std::type_index, std::shared_ptr<ComponentPoolBase>> _componentPools;
