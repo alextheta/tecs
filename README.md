@@ -13,7 +13,7 @@ First of all, you need a ```World``` to store your entities.
 ```cpp
 #include <tecs.hpp>
 
-using te::ecs;
+using namespace te::ecs;
 
 ...
 
@@ -120,13 +120,13 @@ class GravitySystem : public InitSystem, public UpdateSystem, public DestroySyst
 ECS architecture mostly used in game dev, but i do not know what engine you prefer, so update method allows you to pass frame delta time.
 Actually, for this example there is no need for ```Init``` & ```Destroy```.
 
-It's time to introduce ```Filter``` and implement ```Update``` method. Filter can separate entities by components that are attached to them. Also filter provides an iterator to access the data.
+It's time to introduce ```Filter``` and implement ```Update``` method of the system. Filter can separate entities by components that are attached to them. Also filter provides an iterator to access the data.
 ```cpp
 class GravitySystem : public UpdateSystem
 {
     void Update(World &world, float deltaTime) override
     {
-        Filter<Velocity, Position> filter(world);
+        auto filter = world.MakeFilter<Velocity, Position>().Build();
     
         for (auto [entity, velocity, position]: filter)
         {
@@ -136,7 +136,9 @@ class GravitySystem : public UpdateSystem
     }
 }
 ```
-Every time you define a filter, it builds an entity list with internal ```Update``` call. If you dont change your entity-component configuration every frame, a point for some specific optimization is to define filter as a system class member (or somewhere on a higher level) and update filter manually when needed:
+You can define filter using World's ```MakeFilter``` or directly, like ```Filter<Velocity, Position> filter(world)```. After a ```Build``` call, filter will fetch all the entities that have all types of components you mentioned.
+
+If you dont change your entity-component configuration every frame, a point for some specific optimization is to define filter as a system class member (or somewhere on a higher level) and rebuild filter manually when needed:
 ```cpp
 Filter<Velocity, Position> *filter; // Note that Filter has no default constructor and you must pass the World instance on construction
 
@@ -146,8 +148,15 @@ filter = new Filter<Velocity, Position>(world);
 
 ...
 
-filter->Update();
+filter->Build();
 ```
+In some cases you need to exclude entities with specific components. ```Exclude``` method of ```Filter``` exsits for this very purpose:
+```cpp
+
+auto filter = world.MakeFilter<Velocity, Position>().Exclude<Rotation, Input>().Build();
+```
+Remember to rebuild your filter after changing the set of components.
+
 Here in tecs systems are stored in ```SystemRegistry``` that attached to some world. The registry is a tool to store and run systems at a desireable time.
 ```cpp
 SystemRegistry systemRegistry(world);
@@ -171,7 +180,7 @@ Basically, that's all. Feel free to contact me to ask questions, report bugs and
 
 ## Dependencies
 
-* STL
+* С++20 STL
 * [boost::dynamic_bitset](https://github.com/boostorg/dynamic_bitset)
 
 ## What else?
