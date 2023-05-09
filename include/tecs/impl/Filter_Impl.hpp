@@ -57,7 +57,7 @@ namespace te::ecs
     {
         auto firstSetSize = first.size();
         auto secondSetSize = second.size();
-        auto biggerSetSize = std::max(firstSetSize, secondSetSize);
+        auto biggerSetSize = (std::max)(firstSetSize, secondSetSize);
 
         first.resize(biggerSetSize);
         second.resize(biggerSetSize);
