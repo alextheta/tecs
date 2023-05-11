@@ -10,7 +10,7 @@ namespace te::ecs
     class Filter
     {
     public:
-//        static_assert(sizeof...(IncludeComponents) > 0, "There are no components to filter");
+        static_assert(sizeof...(IncludeComponents) > 0, "There are no components to filter");
 
         class Iterator
         {
