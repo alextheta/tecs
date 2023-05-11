@@ -13,7 +13,7 @@ namespace te::ecs
     {
     public:
         SystemRegistry() = delete;
-        SystemRegistry(World &world);
+        explicit SystemRegistry(World &world);
         ~SystemRegistry() = default;
 
         template<typename T, typename... Args>
