@@ -5,17 +5,17 @@
 namespace te::ecs
 {
     template<typename T>
-    SparseContainer<T>::SparseContainer() : SparseContainer(defaultCapacity)
+    inline SparseContainer<T>::SparseContainer() : SparseContainer(defaultCapacity)
     {}
 
     template<typename T>
-    SparseContainer<T>::SparseContainer(size_t initialCapacity)
+    inline SparseContainer<T>::SparseContainer(size_t initialCapacity)
     {
         Reserve(initialCapacity);
     }
 
     template<typename T>
-    T *SparseContainer<T>::Insert(size_t index, T &value)
+    inline T *SparseContainer<T>::Insert(size_t index, T &value)
     {
         size_t denseIndex;
         if (Test(index))
@@ -49,7 +49,7 @@ namespace te::ecs
     }
 
     template<typename T>
-    T *SparseContainer<T>::Get(size_t index)
+    inline T *SparseContainer<T>::Get(size_t index)
     {
         if (index >= _sparseBitset.size())
         {
@@ -66,7 +66,7 @@ namespace te::ecs
     }
 
     template<typename T>
-    bool SparseContainer<T>::Test(size_t index) const
+    inline bool SparseContainer<T>::Test(size_t index) const
     {
         size_t currentSize = _sparseOrder.size();
         if (index >= currentSize)
@@ -78,7 +78,7 @@ namespace te::ecs
     }
 
     template<typename T>
-    void SparseContainer<T>::Remove(size_t index)
+    inline void SparseContainer<T>::Remove(size_t index)
     {
         if (!Test(index))
         {
@@ -96,7 +96,7 @@ namespace te::ecs
     }
 
     template<typename T>
-    void SparseContainer<T>::Reserve(size_t capacity)
+    inline void SparseContainer<T>::Reserve(size_t capacity)
     {
         _sparseBitset.reserve(capacity);
         _sparseOrder.reserve(capacity);
@@ -105,13 +105,13 @@ namespace te::ecs
     }
 
     template<typename T>
-    size_t SparseContainer<T>::Count() const
+    inline size_t SparseContainer<T>::Count() const
     {
         return _sparseBitset.count();
     }
 
     template<typename T>
-    boost::dynamic_bitset<size_t> SparseContainer<T>::GetBitset() const
+    inline boost::dynamic_bitset<size_t> SparseContainer<T>::GetBitset() const
     {
         return _sparseBitset;
     }
