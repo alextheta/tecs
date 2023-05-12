@@ -4,7 +4,7 @@
 
 namespace te::ecs
 {
-    SystemRegistry::SystemRegistry(World &world) : _world(world)
+    inline SystemRegistry::SystemRegistry(World &world) : _world(world)
     {
         for (int i = 0; i < SystemType::Last; i++)
         {
@@ -13,7 +13,7 @@ namespace te::ecs
     }
 
     template<typename T, typename... Args>
-    SystemRegistry &SystemRegistry::Add(Args &&... args)
+    inline SystemRegistry &SystemRegistry::Add(Args &&... args)
     {
         auto system = std::make_shared<T>(std::forward<Args>(args)...);
 
@@ -33,12 +33,12 @@ namespace te::ecs
         return *this;
     }
 
-    void SystemRegistry::Add(SystemType type, std::shared_ptr<SystemBase> system)
+    inline void SystemRegistry::Add(SystemType type, std::shared_ptr<SystemBase> system)
     {
         _systems[type].push_back(system);
     }
 
-    void SystemRegistry::Init() const
+    inline void SystemRegistry::Init() const
     {
         for (auto &system: _systems[InitSystemType])
         {
@@ -46,7 +46,7 @@ namespace te::ecs
         }
     }
 
-    void SystemRegistry::Update(float deltaTime) const
+    inline void SystemRegistry::Update(float deltaTime) const
     {
         for (auto &system: _systems[UpdateSystemType])
         {
@@ -54,7 +54,7 @@ namespace te::ecs
         }
     }
 
-    void SystemRegistry::Destroy()
+    inline void SystemRegistry::Destroy()
     {
         for (auto &system: _systems[DestroySystemType])
         {

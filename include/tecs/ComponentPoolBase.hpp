@@ -9,8 +9,8 @@ namespace te::ecs
     class ComponentPoolBase
     {
     public:
-        ComponentPoolBase() = default;
-        ComponentPoolBase(World &world);
+        ComponentPoolBase() = delete;
+        explicit ComponentPoolBase(World &world);
         virtual ~ComponentPoolBase() = default;
 
         virtual bool Has(size_t entityId) const = 0;

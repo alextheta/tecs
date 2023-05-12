@@ -5,7 +5,7 @@
 namespace te::ecs
 {
     template<typename... IncludeComponents>
-    Filter<IncludeComponents ...>::Filter::Filter(World &world) : _world(world)
+    inline Filter<IncludeComponents ...>::Filter::Filter(World &world) : _world(world)
     {
         _entities.reset();
 
@@ -15,7 +15,7 @@ namespace te::ecs
 
     template<typename... IncludeComponents>
     template<typename... ExcludeComponents>
-    Filter<IncludeComponents ...> &Filter<IncludeComponents ...>::Exclude()
+    inline Filter<IncludeComponents ...> &Filter<IncludeComponents ...>::Exclude()
     {
         _excludedPoolsCache.clear();
         (_excludedPoolsCache.push_back(_world.GetPool<ExcludeComponents>()), ...);
@@ -24,7 +24,7 @@ namespace te::ecs
     }
 
     template<typename... IncludeComponents>
-    Filter<IncludeComponents ...> &Filter<IncludeComponents ...>::Build()
+    inline Filter<IncludeComponents ...> &Filter<IncludeComponents ...>::Build()
     {
         ApplyIncludes();
         ApplyExcludes();
@@ -35,13 +35,13 @@ namespace te::ecs
     }
 
     template<typename... IncludeComponents>
-    Filter<IncludeComponents ...>::Iterator Filter<IncludeComponents ...>::begin()
+    inline Filter<IncludeComponents ...>::Iterator Filter<IncludeComponents ...>::begin()
     {
         return Iterator(*this, _entities.find_first());
     }
 
     template<typename... IncludeComponents>
-    Filter<IncludeComponents ...>::Iterator Filter<IncludeComponents ...>::end()
+    inline Filter<IncludeComponents ...>::Iterator Filter<IncludeComponents ...>::end()
     {
         size_t lastEntity = _entities.find_first();
         do
@@ -53,18 +53,18 @@ namespace te::ecs
     }
 
     template<typename... IncludeComponents>
-    void Filter<IncludeComponents ...>::EqualizeBitsets(boost::dynamic_bitset<size_t> &first, boost::dynamic_bitset<size_t> &second)
+    inline void Filter<IncludeComponents ...>::EqualizeBitsets(boost::dynamic_bitset<size_t> &first, boost::dynamic_bitset<size_t> &second)
     {
         auto firstSetSize = first.size();
         auto secondSetSize = second.size();
-        auto biggerSetSize = std::max(firstSetSize, secondSetSize);
+        auto biggerSetSize = (std::max)(firstSetSize, secondSetSize);
 
         first.resize(biggerSetSize);
         second.resize(biggerSetSize);
     }
 
     template<typename... IncludeComponents>
-    void Filter<IncludeComponents ...>::ApplyIncludes()
+    inline void Filter<IncludeComponents ...>::ApplyIncludes()
     {
         for (auto &pool: _includedPoolsCache)
         {
@@ -77,7 +77,7 @@ namespace te::ecs
     }
 
     template<typename... IncludeComponents>
-    void Filter<IncludeComponents ...>::ApplyExcludes()
+    inline void Filter<IncludeComponents ...>::ApplyExcludes()
     {
         for (auto &pool: _excludedPoolsCache)
         {
@@ -90,31 +90,31 @@ namespace te::ecs
     }
 
     template<typename... IncludeComponents>
-    Filter<IncludeComponents ...>::Iterator::Iterator(Filter<IncludeComponents ...> &filter, size_t startEntity) : _filter(filter), _currentEntity(startEntity)
+    inline Filter<IncludeComponents ...>::Iterator::Iterator(Filter<IncludeComponents ...> &filter, size_t startEntity) : _filter(filter), _currentEntity(startEntity)
     {}
 
     template<typename... IncludeComponents>
-    bool Filter<IncludeComponents ...>::Iterator::operator!=(const Iterator &other)
+    inline bool Filter<IncludeComponents ...>::Iterator::operator!=(const Iterator &other)
     {
         return _currentEntity != other._currentEntity;
     }
 
     template<typename... IncludeComponents>
-    typename Filter<IncludeComponents ...>::Iterator &Filter<IncludeComponents ...>::Iterator::operator++()
+    inline typename Filter<IncludeComponents ...>::Iterator &Filter<IncludeComponents ...>::Iterator::operator++()
     {
         _currentEntity = _filter._entities.find_next(_currentEntity);
         return *this;
     }
 
     template<typename... IncludeComponents>
-    std::tuple<size_t, IncludeComponents &...> Filter<IncludeComponents ...>::Iterator::operator*()
+    inline std::tuple<size_t, IncludeComponents &...> Filter<IncludeComponents ...>::Iterator::operator*()
     {
         return BuildTuple(_currentEntity, std::make_index_sequence<sizeof...(IncludeComponents)>{});
     }
 
     template<typename... IncludeComponents>
     template<std::size_t... Is>
-    std::tuple<size_t, IncludeComponents &...> Filter<IncludeComponents ...>::Iterator::BuildTuple(int index, std::index_sequence<Is...>)
+    inline std::tuple<size_t, IncludeComponents &...> Filter<IncludeComponents ...>::Iterator::BuildTuple(int index, std::index_sequence<Is...>)
     {
         return std::make_tuple(index, std::ref(std::static_pointer_cast<ComponentPool<IncludeComponents>>(_filter._includedPoolsCache[Is])->Get(index))...);
     }

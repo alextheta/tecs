@@ -7,7 +7,7 @@
 
 namespace te::ecs
 {
-    size_t World::CreateEntity()
+    inline size_t World::CreateEntity()
     {
         auto newEntity = _recycledEntities.find_first();
         if (newEntity != boost::dynamic_bitset<size_t>::npos)
@@ -28,12 +28,12 @@ namespace te::ecs
         return newEntity;
     }
 
-    bool World::HasEntity(const size_t entityId) const
+    inline bool World::HasEntity(const size_t entityId) const
     {
         return entityId < _entities.size() && _entities.test(entityId);
     }
 
-    void World::DestroyEntity(const size_t entityId)
+    inline void World::DestroyEntity(const size_t entityId)
     {
         if (_entities.test(entityId))
         {
@@ -53,13 +53,13 @@ namespace te::ecs
         }
     }
 
-    const boost::dynamic_bitset<size_t> &World::GetEntities() const
+    inline const boost::dynamic_bitset<size_t> &World::GetEntities() const
     {
         return _entities;
     }
 
     template<typename T>
-    const std::shared_ptr<ComponentPool<T>> World::GetPool()
+    inline const std::shared_ptr<ComponentPool<T>> World::GetPool()
     {
         std::type_index typeId = typeid(T);
 
@@ -72,22 +72,22 @@ namespace te::ecs
     }
 
     template<typename... IncludeComponents>
-    Filter<IncludeComponents...> World::MakeFilter()
+    inline Filter<IncludeComponents...> World::MakeFilter()
     {
         return Filter<IncludeComponents...>(*this);
     }
 
-    void World::BindPool(std::type_index typeId, std::shared_ptr<ComponentPoolBase> pool)
+    inline void World::BindPool(std::type_index typeId, std::shared_ptr<ComponentPoolBase> pool)
     {
         _componentPools[typeId] = pool;
     }
 
-    bool World::HasPool(std::type_index typeId) const
+    inline bool World::HasPool(std::type_index typeId) const
     {
         return _componentPools.count(typeId) != 0;
     }
 
-    const std::shared_ptr<ComponentPoolBase> World::GetPool(std::type_index typeId) const
+    inline const std::shared_ptr<ComponentPoolBase> World::GetPool(std::type_index typeId) const
     {
         if (!HasPool(typeId))
         {

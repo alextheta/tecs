@@ -12,7 +12,7 @@ namespace te::ecs
         static const size_t defaultCapacity = 512;
 
         SparseContainer();
-        SparseContainer(size_t initialCapacity);
+        explicit SparseContainer(size_t initialCapacity);
 
         T *Insert(size_t index, T &value);
         T *Get(size_t index);
