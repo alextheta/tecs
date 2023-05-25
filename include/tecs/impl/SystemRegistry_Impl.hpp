@@ -4,11 +4,19 @@
 
 namespace te::ecs
 {
-    inline SystemRegistry::SystemRegistry(World &world) : _world(world)
+    inline SystemRegistry::SystemRegistry(const std::shared_ptr<World> &world)
     {
+        Clear();
+        SetWorld(world);
+    }
+
+    inline void SystemRegistry::Clear()
+    {
+        _systems.clear();
+
         for (int i = 0; i < SystemType::Last; i++)
         {
-            _systems.push_back(std::vector<std::shared_ptr<SystemBase>>());
+            _systems.emplace_back();
         }
     }
 
@@ -33,7 +41,7 @@ namespace te::ecs
         return *this;
     }
 
-    inline void SystemRegistry::Add(SystemType type, std::shared_ptr<SystemBase> system)
+    inline void SystemRegistry::Add(SystemType type, const std::shared_ptr<SystemBase> &system)
     {
         _systems[type].push_back(system);
     }
@@ -42,7 +50,7 @@ namespace te::ecs
     {
         for (auto &system: _systems[InitSystemType])
         {
-            std::static_pointer_cast<InitSystem>(system)->Init(_world);
+            std::static_pointer_cast<InitSystem>(system)->Init(*_world);
         }
     }
 
@@ -50,7 +58,7 @@ namespace te::ecs
     {
         for (auto &system: _systems[UpdateSystemType])
         {
-            std::static_pointer_cast<UpdateSystem>(system)->Update(_world, deltaTime);
+            std::static_pointer_cast<UpdateSystem>(system)->Update(*_world, deltaTime);
         }
     }
 
@@ -58,12 +66,24 @@ namespace te::ecs
     {
         for (auto &system: _systems[DestroySystemType])
         {
-            std::static_pointer_cast<DestroySystem>(system)->Destroy(_world);
+            std::static_pointer_cast<DestroySystem>(system)->Destroy(*_world);
         }
 
-        for (auto &systemVector: _systems)
+        Clear();
+    }
+
+    inline void SystemRegistry::SetWorld(const std::shared_ptr<World> &world, bool init)
+    {
+        _world = world;
+
+        if (init)
         {
-            systemVector.clear();
+            Init();
         }
+    }
+
+    inline World &SystemRegistry::GetWorld() const
+    {
+        return *_world;
     }
 }
