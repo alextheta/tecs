@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ranges>
+
 #include <tecs/Filter.hpp>
 
 namespace te::ecs
@@ -66,13 +68,20 @@ namespace te::ecs
     template<typename... IncludeComponents>
     inline void Filter<IncludeComponents ...>::ApplyIncludes()
     {
-        for (auto &pool: _includedPoolsCache)
+        if (_includedPoolsCache.empty())
+        {
+            _entities.clear();
+            return;
+        }
+
+        _entities = _includedPoolsCache.front()->GetEntities();
+        for (auto &pool: _includedPoolsCache | std::views::drop(1))
         {
             auto entitiesInPool = pool->GetEntities();
 
             EqualizeBitsets(entitiesInPool, _entities);
 
-            _entities |= entitiesInPool;
+            _entities &= entitiesInPool;
         }
     }
 
@@ -91,7 +100,8 @@ namespace te::ecs
 
     template<typename... IncludeComponents>
     inline Filter<IncludeComponents ...>::Iterator::Iterator(Filter<IncludeComponents ...> &filter, size_t startEntity) : _filter(filter), _currentEntity(startEntity)
-    {}
+    {
+    }
 
     template<typename... IncludeComponents>
     inline bool Filter<IncludeComponents ...>::Iterator::operator!=(const Iterator &other)
