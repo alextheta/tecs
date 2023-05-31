@@ -13,15 +13,21 @@ namespace te::ecs
     {
     public:
         SystemRegistry() = delete;
-        explicit SystemRegistry(World &world);
+        explicit SystemRegistry(const std::shared_ptr<World> &world);
         ~SystemRegistry() = default;
 
         template<typename T, typename... Args>
         SystemRegistry &Add(Args &&... args);
 
+        void Clear();
+
         void Init() const;
         void Update(float deltaTime = 0.0f) const;
         void Destroy();
+
+        void SetWorld(const std::shared_ptr<World> &world, bool init = false);
+
+        World &GetWorld() const;
 
     private:
         enum SystemType
@@ -33,9 +39,9 @@ namespace te::ecs
             Last
         };
 
-        void Add(SystemType type, std::shared_ptr<SystemBase> system);
+        void Add(SystemType type, const std::shared_ptr<SystemBase> &system);
 
-        World &_world;
+        std::shared_ptr<World> _world;
         std::vector<std::vector<std::shared_ptr<SystemBase>>> _systems;
     };
 }
